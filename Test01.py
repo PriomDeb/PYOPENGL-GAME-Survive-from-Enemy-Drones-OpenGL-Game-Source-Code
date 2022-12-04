@@ -77,14 +77,17 @@ import math
 
 import threading
 from time import sleep
+from pynput.keyboard import Key, Controller
 
 rotate = 0
+keyboard = Controller()
 
 def rotating():
     global rotate
     while True:
-        sleep(0.1)
-        rotate += 15
+        keyboard.press("z")
+        sleep(0.01)
+        rotate += 1
         glutPostRedisplay()
 
 
