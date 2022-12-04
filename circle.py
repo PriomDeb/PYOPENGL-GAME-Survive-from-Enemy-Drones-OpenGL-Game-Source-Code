@@ -46,7 +46,7 @@ class MidpointCircle:
 
     def midpoint_circle_algorithm(self, radius, center_x=0.0, center_y=0.0, y=0):
         glBegin(GL_POINTS)
-        glVertex2f(center_x, center_y)
+        # glVertex2f(center_x, center_y)
 
         d = 1 - radius
         # d_N = 2 * y + 3

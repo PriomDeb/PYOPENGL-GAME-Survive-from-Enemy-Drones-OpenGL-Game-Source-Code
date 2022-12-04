@@ -8,8 +8,44 @@ from digits import Digits
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
+
 import math
 from random import randint
+from threading import Thread
+from time import sleep
+from pynput.keyboard import Key, Controller
+
+y = 900
+auto_key_press = Controller()
+stars = True
+scale_radius = 0
+score = 10
+
+line = MidpointLine()
+circle = MidpointCircle()
+
+
+def animate():
+    global y, scale_radius
+    while True:
+        scale_radius += 1
+        auto_key_press.press(",")
+        sleep(0.1)
+        y -= 20
+        if y <= -900:
+            y = 900
+            scale_radius = 0
+        glutPostRedisplay()
+
+def score_increment():
+    global score
+    while True:
+        sleep(1)
+        glutPostRedisplay()
+        score += 1
+
+
+
 
 
 class Start_OpenGL:
@@ -58,6 +94,12 @@ class Start_OpenGL:
         glutKeyboardFunc(self.buttons)
         glutMotionFunc(self.mouse)
 
+        animation_thread = Thread(target=animate)
+        animation_thread.start()
+
+        score_thread = Thread(target=score_increment)
+        score_thread.start()
+
         glViewport(0, 0, self.win_size_x, self.win_size_y)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
@@ -67,7 +109,7 @@ class Start_OpenGL:
         glLoadIdentity()
 
     def mouse(self, x, y):
-        print(x, y)
+        # print(x, y)
 
         self.player1_move_x = x - 450
         self.player1_move_y = y - 450
@@ -122,8 +164,12 @@ class Start_OpenGL:
 
         if self.player1_radius + self.player1_move_x == self.player2_radius + self.player2_move_x \
                 and self.player1_radius + self.player1_move_y == self.player2_radius + self.player2_move_y:
-            print("Collision")
-        print(self.player1_move_x)
+            pass
+            # print("Collision")
+
+        if key == b"t":
+            global stars
+            stars = True
 
         glutPostRedisplay()
 
@@ -138,24 +184,50 @@ class Start_OpenGL:
         glColor3f(1, 1, 0)
 
         # Drawing methods
-        circle = MidpointCircle()
-        # circle.midpoint_circle_algorithm(250, self.move_x, self.move_y)
-        circle.filled_circle(self.player1_radius, self.player1_move_x - 40, self.player1_move_y)
+        self.road()
+        self.trees()
+        self.trees(1350, 0)
+
+        # circle.midpoint_circle_algorithm(scale_radius, self.player1_move_x - 40, y)
+        # circle.midpoint_circle_algorithm(scale_radius, self.player1_move_x - 600, y)
 
         glColor3f(255, 255, 100)
         circle.filled_circle(self.player2_radius, self.player2_move_x, self.player2_move_y)
-        # circle.midpoint_circle_algorithm(self.circle_radius, self.move_x, self.move_y)
 
-        # line = MidpointLine()
-        # line.midpoint(0 + self.move_x, 0 + self.move_y, 0 + self.move_x, 250 + self.move_y)
+        offset = 350
 
-        score = Digits()
-        score.draw_digit(f"{self.score}")
+        line.midpoint(-500 - offset, y, -200 - offset, y)  # Top
+        line.midpoint(-500 - offset, y - 100, -200 - offset, y - 100)  # Bottom
+        line.midpoint(-500 - offset, y, -500 - offset, y - 100)  # Left
+        line.midpoint(-200 - offset, y - 100, -200 - offset, y)  # Right
+
+        score_draw = Digits()
+        score_draw.draw_digit(f"{score}")
+
+
 
         glutSwapBuffers()
 
     def start_main_loop(self):
         glutMainLoop()
+
+    def road(self):
+        left_x1, left_y1 = -700, -900
+        offset = 100
+
+        line.midpoint(left_x1 + offset, left_y1, left_x1 + 100 + offset, 900)
+        line.midpoint(-left_x1 - offset, left_y1, -left_x1 - 100 - offset, 900)
+
+        for i in range(10):
+            line.midpoint(left_x1 + offset + i, left_y1, left_x1 + 100 + offset + i, 900)
+            line.midpoint(-left_x1 - offset - i, left_y1, -left_x1 - 100 - offset - i, 900)
+
+    def trees(self, offset_x=0, offset_y=0):
+        circle.midpoint_circle_algorithm(scale_radius + 10, -700 + offset_x, y + offset_y)
+        circle.midpoint_circle_algorithm(scale_radius + 10, -700 + 20 + offset_x, y + offset_y)
+        circle.midpoint_circle_algorithm(scale_radius + 10, -700 + 10 + offset_x, y + 10 + offset_y)
+
+        # line.midpoint(-700, -700 + y, 680, y - 800)
 
 
 gl = Start_OpenGL(win_size_x=900, win_size_y=900, pixel_size=1)
