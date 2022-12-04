@@ -1,3 +1,5 @@
+import OpenGL.GL.shaders
+
 from circle import MidpointCircle
 from line import MidpointLine
 from digits import Digits
@@ -7,6 +9,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 import math
+from random import randint
 
 
 class Start_OpenGL:
@@ -29,10 +32,14 @@ class Start_OpenGL:
         self.__center_x = 0
         self.__center_y = 0
 
-        self.circle_radius = 0
-        self.move_x = 0
-        self.move_y = 0
+        self.player1_radius = 40
+        self.player1_move_x = 0
+        self.player1_move_y = 0
         self.score = 10
+
+        self.player2_radius = 40
+        self.player2_move_x = 0
+        self.player2_move_y = 0
 
     def set_circle_values(self, radius, center_x=0, center_y=0):
         self.__radius = radius
@@ -62,36 +69,67 @@ class Start_OpenGL:
     def mouse(self, x, y):
         print(x, y)
 
-        self.move_x = x - 450
-        self.move_y = y - 450
+        self.player1_move_x = x - 450
+        self.player1_move_y = y - 450
         glutPostRedisplay()
 
     def buttons(self, key, x, y):
-        move = 20
+        move = 50
         if key == b"w":
             self.score += 1
-            self.move_y += move
+            self.player1_move_y += move
         if key == b"s":
-            self.move_y -= move
+            self.player1_move_y -= move
         if key == b"a":
-            self.move_x -= move
+            self.player1_move_x -= move
         if key == b"d":
-            self.move_x += move
+            self.player1_move_x += move
 
-        if key == b"q":
-            self.move_x -= move
-            self.move_y += move
-        if key == b"e":
-            self.move_x += move
-            self.move_y += move
-        if key == b"z":
-            self.move_x -= move
-            self.move_y -= move
-        if key == b"c":
-            self.move_x += move
-            self.move_y -= move
+        if self.player1_radius > 0:
+            if key == b"m":
+                self.player1_radius += move
+            if key == b"n":
+                self.player1_radius -= move
+        else:
+            self.player1_radius += 10
+
+        if self.player1_move_y < - self.win_size_y:
+            self.player1_move_y = self.win_size_y
+        if self.player1_move_x < - self.win_size_x:
+            self.player1_move_x = self.win_size_x
+        if self.player1_move_y > self.win_size_y:
+            self.player1_move_y = - self.win_size_y
+        if self.player1_move_x > self.win_size_x:
+            self.player1_move_x = - self.win_size_x
+
+        if self.player2_move_y < - self.win_size_y:
+            self.player2_move_y = self.win_size_y
+        if self.player2_move_x < - self.win_size_x:
+            self.player2_move_x = self.win_size_x
+        if self.player2_move_y > self.win_size_y:
+            self.player2_move_y = - self.win_size_y
+        if self.player2_move_x > self.win_size_x:
+            self.player2_move_x = - self.win_size_x
+
+        if key == b"6":
+            self.player2_move_x += move
+        if key == b"8":
+            self.player2_move_y += move
+        if key == b"4":
+            self.player2_move_x -= move
+        if key == b"2":
+            self.player2_move_y -= move
+
+        if self.player1_radius + self.player1_move_x == self.player2_radius + self.player2_move_x \
+                and self.player1_radius + self.player1_move_y == self.player2_radius + self.player2_move_y:
+            print("Collision")
+        print(self.player1_move_x)
 
         glutPostRedisplay()
+
+    def another_circle(self, radius):
+        circle1 = MidpointCircle()
+        circle1.midpoint_circle_algorithm(500)
 
     # Glut Display
     def show_screen(self):
@@ -101,11 +139,15 @@ class Start_OpenGL:
 
         # Drawing methods
         circle = MidpointCircle()
-        circle.midpoint_circle_algorithm(250, self.move_x, self.move_y)
-        circle.filled_circle(100, self.move_x, self.move_y)
+        # circle.midpoint_circle_algorithm(250, self.move_x, self.move_y)
+        circle.filled_circle(self.player1_radius, self.player1_move_x - 40, self.player1_move_y)
 
-        line = MidpointLine()
-        line.midpoint(0 + self.move_x, 0 + self.move_y, 0 + self.move_x, 250 + self.move_y)
+        glColor3f(255, 255, 100)
+        circle.filled_circle(self.player2_radius, self.player2_move_x, self.player2_move_y)
+        # circle.midpoint_circle_algorithm(self.circle_radius, self.move_x, self.move_y)
+
+        # line = MidpointLine()
+        # line.midpoint(0 + self.move_x, 0 + self.move_y, 0 + self.move_x, 250 + self.move_y)
 
         score = Digits()
         score.draw_digit(f"{self.score}")
