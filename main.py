@@ -1,5 +1,6 @@
 from circle import MidpointCircle
 from line import MidpointLine
+from digits import Digits
 
 
 from OpenGL.GL import *
@@ -31,6 +32,7 @@ class Start_OpenGL:
         self.circle_radius = 0
         self.move_x = 0
         self.move_y = 0
+        self.score = 10
 
     def set_circle_values(self, radius, center_x=0, center_y=0):
         self.__radius = radius
@@ -59,15 +61,6 @@ class Start_OpenGL:
 
     def mouse(self, x, y):
         print(x, y)
-        # if x < self.win_size_x / 2:
-        #     self.move_x = - x
-        # if y < self.win_size_y / 2:
-        #     self.move_y = - y
-        #
-        # if x > self.win_size_x / 2:
-        #     self.move_x = x
-        # if y > self.win_size_y / 2:
-        #     self.move_y = y
 
         self.move_x = x - 450
         self.move_y = y - 450
@@ -76,6 +69,7 @@ class Start_OpenGL:
     def buttons(self, key, x, y):
         move = 20
         if key == b"w":
+            self.score += 1
             self.move_y += move
         if key == b"s":
             self.move_y -= move
@@ -108,10 +102,13 @@ class Start_OpenGL:
         # Drawing methods
         circle = MidpointCircle()
         circle.midpoint_circle_algorithm(250, self.move_x, self.move_y)
-        circle.filled_circle(50, self.move_x, self.move_y)
+        circle.filled_circle(100, self.move_x, self.move_y)
 
         line = MidpointLine()
         line.midpoint(0 + self.move_x, 0 + self.move_y, 0 + self.move_x, 250 + self.move_y)
+
+        score = Digits()
+        score.draw_digit(f"{self.score}")
 
         glutSwapBuffers()
 
