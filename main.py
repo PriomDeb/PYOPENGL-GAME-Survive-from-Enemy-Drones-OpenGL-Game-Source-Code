@@ -26,6 +26,10 @@ line = MidpointLine()
 circle = MidpointCircle()
 colors = 0, 0, 0
 
+PLAYER_CURRENT_X_POSITION = 0
+PLAYER_CURRENT_Y_POSITION = 0
+PLAYER_RADIUS = 20
+
 OBJECT1_CURRENT_X_POSITION = randint(-600, 600)  # - 600 => 600
 OBJECT1_CURRENT_Y_POSITION = 900
 OBJECT1_SPEED = 10
@@ -70,7 +74,7 @@ def animate():
     blue = False
 
     while True:
-        SPEED_MULTIPLIER += 0.01
+        SPEED_MULTIPLIER += 0.001
         scale_radius += 1
         auto_key_press.press(",")
         sleep(0.1)
@@ -129,6 +133,32 @@ def score_increment():
         glutPostRedisplay()
         score += 1
 
+def RESTART():
+    PLAYER_CURRENT_X_POSITION = 0
+    PLAYER_CURRENT_Y_POSITION = 0
+    PLAYER_RADIUS = 20
+
+    OBJECT1_CURRENT_X_POSITION = randint(-600, 600)  # - 600 => 600
+    OBJECT1_CURRENT_Y_POSITION = 900
+    OBJECT1_SPEED = 10
+
+    OBJECT2_CURRENT_X_POSITION = randint(-600, 600)
+    OBJECT2_CURRENT_Y_POSITION = 900
+    OBJECT2_SPEED = 12
+
+    OBJECT3_CURRENT_X_POSITION = randint(-600, 600)
+    OBJECT3_CURRENT_Y_POSITION = 900
+    OBJECT3_SPEED = 20
+
+    OBJECT4_CURRENT_X_POSITION = randint(-600, 600)
+    OBJECT4_CURRENT_Y_POSITION = 900
+    OBJECT4_SPEED = 14
+
+    OBJECT5_CURRENT_X_POSITION = randint(-600, 600)
+    OBJECT5_CURRENT_Y_POSITION = 900
+    OBJECT5_SPEED = 22
+
+    SPEED_MULTIPLIER = 1
 
 
 
@@ -202,6 +232,7 @@ class Start_OpenGL:
         glutPostRedisplay()
 
     def buttons(self, key, x, y):
+        global PLAYER_CURRENT_Y_POSITION, PLAYER_CURRENT_X_POSITION
         move = 50
         if key == b"w":
             self.score += 1
@@ -248,6 +279,23 @@ class Start_OpenGL:
         if key == b"2":
             self.player2_move_y -= move
 
+        PLAYER_CURRENT_X_POSITION = self.player2_move_x
+        PLAYER_CURRENT_Y_POSITION = self.player2_move_y
+
+        # print(f"Player x: {PLAYER_CURRENT_X_POSITION}, Player y: {PLAYER_CURRENT_Y_POSITION}")
+
+        # Collision detection
+        if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT1_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT1_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
+            print("Collision with Object 1")
+        if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT2_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT2_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
+            print("Collision with Object 2")
+        if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT3_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT3_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
+            print("Collision with Object 3")
+        if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT4_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT4_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
+            print("Collision with Object 4")
+        if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
+            print("Collision with Object 5")
+
         if self.player1_radius + self.player1_move_x == self.player2_radius + self.player2_move_x \
                 and self.player1_radius + self.player1_move_y == self.player2_radius + self.player2_move_y:
             pass
@@ -275,6 +323,7 @@ class Start_OpenGL:
         self.trees(1350, 0)
         CUBE(y=OBJECT1_CURRENT_Y_POSITION)
 
+        # Obstacles
         glColor3f(1, 0, 0)
         self.obstacle(OBJECT1_CURRENT_X_POSITION, OBJECT1_CURRENT_Y_POSITION)
         self.obstacle(OBJECT2_CURRENT_X_POSITION, OBJECT2_CURRENT_Y_POSITION)
@@ -282,8 +331,10 @@ class Start_OpenGL:
         self.obstacle(OBJECT4_CURRENT_X_POSITION, OBJECT4_CURRENT_Y_POSITION)
         self.obstacle(OBJECT5_CURRENT_X_POSITION, OBJECT5_CURRENT_Y_POSITION)
 
+        # Player
         glColor3f(255, 255, 100)
-        circle.filled_circle(self.player2_radius, self.player2_move_x, self.player2_move_y)
+        # circle.filled_circle(self.player2_radius, self.player2_move_x, self.player2_move_y)
+        circle.midpoint_circle_algorithm(PLAYER_RADIUS, self.player2_move_x, self.player2_move_y)
 
         offset = 350
 
