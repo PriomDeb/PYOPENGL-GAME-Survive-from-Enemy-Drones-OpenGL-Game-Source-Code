@@ -18,7 +18,6 @@ from pynput.keyboard import Key, Controller
 
 y = 900
 auto_key_press = Controller()
-stars = True
 scale_radius = 0
 score = 0
 
@@ -51,6 +50,21 @@ OBJECT5_CURRENT_Y_POSITION = 900
 OBJECT5_SPEED = 22
 
 SPEED_MULTIPLIER = 1
+
+
+def stars_draw(value=10):
+    glBegin(GL_POINTS)
+    for i in range(value):
+        stars_x, stars_y = randint(-1920, -700), randint(-900, 900)
+        glVertex2f(stars_x, stars_y),
+    for i in range(value):
+        stars_x, stars_y = randint(700, 1920), randint(-900, 900)
+        glVertex2f(stars_x, stars_y)
+    glEnd()
+
+    # for i in range(value):
+    #     stars_x, stars_y = randint(-1920, -700), randint(-900, 900)
+    #     CUBE(10, x=stars_x, y=stars_y)
 
 
 def animate():
@@ -134,6 +148,23 @@ def score_increment():
         score += 1
 
 def RESTART():
+    global y, scale_radius, colors, \
+        OBJECT1_CURRENT_Y_POSITION, \
+        OBJECT1_CURRENT_X_POSITION, \
+        OBJECT2_CURRENT_Y_POSITION, \
+        OBJECT2_CURRENT_X_POSITION, \
+        OBJECT3_CURRENT_Y_POSITION, \
+        OBJECT3_CURRENT_X_POSITION, \
+        OBJECT4_CURRENT_Y_POSITION, \
+        OBJECT4_CURRENT_X_POSITION, \
+        OBJECT5_CURRENT_Y_POSITION, \
+        OBJECT5_CURRENT_X_POSITION, \
+        OBJECT1_SPEED, OBJECT2_SPEED, \
+        OBJECT3_SPEED, OBJECT4_SPEED, \
+        OBJECT5_SPEED, SPEED_MULTIPLIER, \
+        PLAYER_CURRENT_X_POSITION, PLAYER_CURRENT_Y_POSITION, \
+        PLAYER_RADIUS
+
     PLAYER_CURRENT_X_POSITION = 0
     PLAYER_CURRENT_Y_POSITION = 0
     PLAYER_RADIUS = 20
@@ -296,14 +327,7 @@ class Start_OpenGL:
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 5")
 
-        if self.player1_radius + self.player1_move_x == self.player2_radius + self.player2_move_x \
-                and self.player1_radius + self.player1_move_y == self.player2_radius + self.player2_move_y:
-            pass
-            # print("Collision")
-
-        if key == b"t":
-            global stars
-            stars = True
+        
 
         glutPostRedisplay()
 
@@ -322,6 +346,9 @@ class Start_OpenGL:
         self.trees()
         self.trees(1350, 0)
         CUBE(y=OBJECT1_CURRENT_Y_POSITION)
+
+        glColor3f(1, 1, 1)
+        stars_draw(value=100)
 
         # Obstacles
         glColor3f(1, 0, 0)
