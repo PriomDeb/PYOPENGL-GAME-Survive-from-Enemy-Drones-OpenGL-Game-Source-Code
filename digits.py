@@ -137,7 +137,7 @@ class Digits:
 
         glEnd()
 
-    def draw_digit(self, digit):
+    def draw_digit(self, digit, offset_x=0, offset_y=0):
         """
         left_top -> l_t
         left_bottom -> l_b
@@ -167,44 +167,50 @@ class Digits:
         else:
             show_digits = digit
 
-        last_digit = int(show_digits[-1])
-        last_second_digit = int(show_digits[-2])
-        for i in digit_lights[last_second_digit]:
-            i()
+        first_digit = int(show_digits[0])
+        if int(digit) > 9:
+            second_digit = int(show_digits[1])
 
-        for i in digit_lights[last_digit]:
-            i(300)
+        if int(digit) <= 9:
+            first_digit = 0
+            second_digit = int(show_digits[0])
+
+        for i in digit_lights[first_digit]:
+            i(x=500 + offset_x, y=250 + offset_y)
+
+        for i in digit_lights[second_digit]:
+            i(x=500 + offset_x, y=250 + offset_y, adjust=250)
 
     def get_midpoint_points(self):
         return self.__midpoint_points
 
-    def r_t(self, adjust=0):
+    def r_t(self, adjust=0, x=0, y=0):
         # Right Top
-        self.midpoint(400 + adjust, 400, 400 + adjust, 600)
+        self.midpoint(400 + adjust + x, 400 + y, 400 + adjust + x, 600 + y)
 
-    def r_b(self, adjust=0):
+    def r_b(self, adjust=0, x=0, y=0):
         # Right Bottom
-        self.midpoint(400 + adjust, 200, 400 + adjust, 400)
+        self.midpoint(400 + adjust + x, 200 + y, 400 + adjust + x, 400 + y)
 
-    def l_t(self, adjust=0):
+    def l_t(self, adjust=0, x=0, y=0):
         # Left Top
-        self.midpoint(200 + adjust, 400, 200 + adjust, 600)
+        self.midpoint(200 + adjust + x, 400 + y, 200 + adjust + x, 600 + y)
 
-    def l_b(self, adjust=0):
+    def l_b(self, adjust=0, x=0, y=0):
         # Left Bottom
-        self.midpoint(200 + adjust, 200, 200 + adjust, 400)
+        self.midpoint(200 + adjust + x, 200 + y, 200 + adjust + x, 400 + y)
 
-    def b(self, adjust=0):
+    def b(self, adjust=0, x=0, y=0):
         # Bottom
-        self.midpoint(200 + adjust, 200, 400 + adjust, 200)
+        self.midpoint(200 + adjust + x, 200 + y, 400 + adjust + x, 200 + y)
 
-    def t(self, adjust=0):
+    def t(self, adjust=0, x=0, y=0):
         # Top
-        self.midpoint(200 + adjust, 600, 400 + adjust, 600)
+        self.midpoint(200 + adjust + x, 600 + y, 400 + adjust + x, 600 + y)
 
-    def m(self, adjust=0):
+    def m(self, adjust=0, x=0, y=0):
         # Middle
-        self.midpoint(200 + adjust, 400, 400 + adjust, 400)
+        self.midpoint(200 + adjust + x, 400 + y, 400 + adjust + x, 400 + y)
 
 
 

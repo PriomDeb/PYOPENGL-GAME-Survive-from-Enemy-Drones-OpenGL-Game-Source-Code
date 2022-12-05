@@ -19,14 +19,20 @@ y = 900
 auto_key_press = Controller()
 stars = True
 scale_radius = 0
-score = 10
+score = 0
 
 line = MidpointLine()
 circle = MidpointCircle()
+colors = 0, 0, 0
 
 
 def animate():
-    global y, scale_radius
+    global y, scale_radius, colors
+
+    red = True
+    green = False
+    blue = False
+
     while True:
         scale_radius += 1
         auto_key_press.press(",")
@@ -35,6 +41,23 @@ def animate():
         if y <= -900:
             y = 900
             scale_radius = 0
+
+        if red:
+            red = False
+            green = True
+            blue = True
+            colors = 1, 0, 0
+        elif blue:
+            red = False
+            green = True
+            blue = False
+            colors = 0, 0, 1
+        elif green:
+            red = True
+            green = False
+            blue = True
+            colors = 0, 1, 0
+
         glutPostRedisplay()
 
 def score_increment():
@@ -73,7 +96,7 @@ class Start_OpenGL:
         self.player1_move_y = 0
         self.score = 10
 
-        self.player2_radius = 40
+        self.player2_radius = 100
         self.player2_move_x = 0
         self.player2_move_y = 0
 
@@ -86,7 +109,7 @@ class Start_OpenGL:
         glutInit()
         glutInitDisplayMode(GLUT_RGBA)
         glutInitWindowSize(self.win_size_x, self.win_size_y)
-        glutInitWindowPosition(500, 0)
+        glutInitWindowPosition(self.win_size_x // 2 - self.win_size_x, 0)
         glutCreateWindow(self.title)
         glClearColor(0.3, 0.3, 0.3, 0)
         glutDisplayFunc(self.show_screen)
@@ -202,8 +225,9 @@ class Start_OpenGL:
         line.midpoint(-200 - offset, y - 100, -200 - offset, y)  # Right
 
         score_draw = Digits()
+        glColor3f(colors[0], colors[1], colors[2])
         score_draw.draw_digit(f"{score}")
-
+        score_draw.draw_digit(f"{score}", offset_x=20, offset_y=20)
 
 
         glutSwapBuffers()
@@ -213,7 +237,7 @@ class Start_OpenGL:
 
     def road(self):
         left_x1, left_y1 = -700, -900
-        offset = 100
+        offset = -50
 
         line.midpoint(left_x1 + offset, left_y1, left_x1 + 100 + offset, 900)
         line.midpoint(-left_x1 - offset, left_y1, -left_x1 - 100 - offset, 900)
@@ -230,7 +254,7 @@ class Start_OpenGL:
         # line.midpoint(-700, -700 + y, 680, y - 800)
 
 
-gl = Start_OpenGL(win_size_x=900, win_size_y=900, pixel_size=1)
+gl = Start_OpenGL(win_size_x=1920, win_size_y=900, pixel_size=1)
 
 gl.initialize()
 gl.start_main_loop()
