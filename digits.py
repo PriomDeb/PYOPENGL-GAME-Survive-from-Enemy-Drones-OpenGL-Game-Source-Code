@@ -137,7 +137,7 @@ class Digits:
 
         glEnd()
 
-    def draw_digit(self, digit, offset_x=0, offset_y=0):
+    def draw_digit(self, digit, offset_x=0, offset_y=0, digit_position_x=0):
         """
         left_top -> l_t
         left_bottom -> l_b
@@ -176,10 +176,10 @@ class Digits:
             second_digit = int(show_digits[0])
 
         for i in digit_lights[first_digit]:
-            i(x=500 + offset_x, y=250 + offset_y)
+            i(x=digit_position_x + offset_x, y=250 + offset_y)
 
         for i in digit_lights[second_digit]:
-            i(x=500 + offset_x, y=250 + offset_y, adjust=250)
+            i(x=digit_position_x + offset_x, y=250 + offset_y, adjust=250)
 
     def get_midpoint_points(self):
         return self.__midpoint_points

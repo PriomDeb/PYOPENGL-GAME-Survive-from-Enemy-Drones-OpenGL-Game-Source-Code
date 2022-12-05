@@ -3,6 +3,7 @@ import OpenGL.GL.shaders
 from circle import MidpointCircle
 from line import MidpointLine
 from digits import Digits
+from cube import CUBE
 
 
 from OpenGL.GL import *
@@ -25,15 +26,51 @@ line = MidpointLine()
 circle = MidpointCircle()
 colors = 0, 0, 0
 
+OBJECT1_CURRENT_X_POSITION = randint(-600, 600)  # - 600 => 600
+OBJECT1_CURRENT_Y_POSITION = 900
+OBJECT1_SPEED = 10
+
+OBJECT2_CURRENT_X_POSITION = randint(-600, 600)
+OBJECT2_CURRENT_Y_POSITION = 900
+OBJECT2_SPEED = 12
+
+OBJECT3_CURRENT_X_POSITION = randint(-600, 600)
+OBJECT3_CURRENT_Y_POSITION = 900
+OBJECT3_SPEED = 20
+
+OBJECT4_CURRENT_X_POSITION = randint(-600, 600)
+OBJECT4_CURRENT_Y_POSITION = 900
+OBJECT4_SPEED = 14
+
+OBJECT5_CURRENT_X_POSITION = randint(-600, 600)
+OBJECT5_CURRENT_Y_POSITION = 900
+OBJECT5_SPEED = 22
+
+SPEED_MULTIPLIER = 1
+
 
 def animate():
-    global y, scale_radius, colors
+    global y, scale_radius, colors, \
+        OBJECT1_CURRENT_Y_POSITION, \
+        OBJECT1_CURRENT_X_POSITION, \
+        OBJECT2_CURRENT_Y_POSITION, \
+        OBJECT2_CURRENT_X_POSITION, \
+        OBJECT3_CURRENT_Y_POSITION, \
+        OBJECT3_CURRENT_X_POSITION, \
+        OBJECT4_CURRENT_Y_POSITION, \
+        OBJECT4_CURRENT_X_POSITION, \
+        OBJECT5_CURRENT_Y_POSITION, \
+        OBJECT5_CURRENT_X_POSITION, \
+        OBJECT1_SPEED, OBJECT2_SPEED, \
+        OBJECT3_SPEED, OBJECT4_SPEED, \
+        OBJECT5_SPEED, SPEED_MULTIPLIER
 
     red = True
     green = False
     blue = False
 
     while True:
+        SPEED_MULTIPLIER += 0.01
         scale_radius += 1
         auto_key_press.press(",")
         sleep(0.1)
@@ -57,6 +94,31 @@ def animate():
             green = False
             blue = True
             colors = 0, 1, 0
+
+        OBJECT1_CURRENT_Y_POSITION += - OBJECT1_SPEED * SPEED_MULTIPLIER
+        if OBJECT1_CURRENT_Y_POSITION < - 900:
+            OBJECT1_CURRENT_Y_POSITION = 900
+            OBJECT1_CURRENT_X_POSITION = randint(-600, 600)
+
+        OBJECT2_CURRENT_Y_POSITION += - OBJECT2_SPEED * SPEED_MULTIPLIER
+        if OBJECT2_CURRENT_Y_POSITION < - 900:
+            OBJECT2_CURRENT_Y_POSITION = 900
+            OBJECT2_CURRENT_X_POSITION = randint(-600, 600)
+
+        OBJECT3_CURRENT_Y_POSITION += - OBJECT3_SPEED * SPEED_MULTIPLIER
+        if OBJECT3_CURRENT_Y_POSITION < - 900:
+            OBJECT3_CURRENT_Y_POSITION = 900
+            OBJECT3_CURRENT_X_POSITION = randint(-600, 600)
+
+        OBJECT4_CURRENT_Y_POSITION += - OBJECT4_SPEED * SPEED_MULTIPLIER
+        if OBJECT4_CURRENT_Y_POSITION < - 900:
+            OBJECT4_CURRENT_Y_POSITION = 900
+            OBJECT4_CURRENT_X_POSITION = randint(-600, 600)
+
+        OBJECT5_CURRENT_Y_POSITION += - OBJECT5_SPEED * SPEED_MULTIPLIER
+        if OBJECT5_CURRENT_Y_POSITION < - 900:
+            OBJECT5_CURRENT_Y_POSITION = 900
+            OBJECT5_CURRENT_X_POSITION = randint(-600, 600)
 
         glutPostRedisplay()
 
@@ -96,7 +158,7 @@ class Start_OpenGL:
         self.player1_move_y = 0
         self.score = 10
 
-        self.player2_radius = 100
+        self.player2_radius = 20
         self.player2_move_x = 0
         self.player2_move_y = 0
 
@@ -111,7 +173,8 @@ class Start_OpenGL:
         glutInitWindowSize(self.win_size_x, self.win_size_y)
         glutInitWindowPosition(self.win_size_x // 2 - self.win_size_x, 0)
         glutCreateWindow(self.title)
-        glClearColor(0.3, 0.3, 0.3, 0)
+        # glClearColor(0.3, 0.3, 0.3, 0)
+        glClearColor(0, 0, 0, 0),
         glutDisplayFunc(self.show_screen)
 
         glutKeyboardFunc(self.buttons)
@@ -132,7 +195,7 @@ class Start_OpenGL:
         glLoadIdentity()
 
     def mouse(self, x, y):
-        # print(x, y)
+        print(x, y)
 
         self.player1_move_x = x - 450
         self.player1_move_y = y - 450
@@ -176,11 +239,11 @@ class Start_OpenGL:
         if self.player2_move_x > self.win_size_x:
             self.player2_move_x = - self.win_size_x
 
-        if key == b"6":
+        if key == b"6" and self.player2_move_x < 600:
             self.player2_move_x += move
         if key == b"8":
             self.player2_move_y += move
-        if key == b"4":
+        if key == b"4" and self.player2_move_x > - 600:
             self.player2_move_x -= move
         if key == b"2":
             self.player2_move_y -= move
@@ -210,9 +273,14 @@ class Start_OpenGL:
         self.road()
         self.trees()
         self.trees(1350, 0)
+        CUBE(y=OBJECT1_CURRENT_Y_POSITION)
 
-        # circle.midpoint_circle_algorithm(scale_radius, self.player1_move_x - 40, y)
-        # circle.midpoint_circle_algorithm(scale_radius, self.player1_move_x - 600, y)
+        glColor3f(1, 0, 0)
+        self.obstacle(OBJECT1_CURRENT_X_POSITION, OBJECT1_CURRENT_Y_POSITION)
+        self.obstacle(OBJECT2_CURRENT_X_POSITION, OBJECT2_CURRENT_Y_POSITION)
+        self.obstacle(OBJECT3_CURRENT_X_POSITION, OBJECT3_CURRENT_Y_POSITION)
+        self.obstacle(OBJECT4_CURRENT_X_POSITION, OBJECT4_CURRENT_Y_POSITION)
+        self.obstacle(OBJECT5_CURRENT_X_POSITION, OBJECT5_CURRENT_Y_POSITION)
 
         glColor3f(255, 255, 100)
         circle.filled_circle(self.player2_radius, self.player2_move_x, self.player2_move_y)
@@ -225,9 +293,10 @@ class Start_OpenGL:
         line.midpoint(-200 - offset, y - 100, -200 - offset, y)  # Right
 
         score_draw = Digits()
+        digit_position = 900
         glColor3f(colors[0], colors[1], colors[2])
-        score_draw.draw_digit(f"{score}")
-        score_draw.draw_digit(f"{score}", offset_x=20, offset_y=20)
+        score_draw.draw_digit(f"{score}", digit_position_x=digit_position)
+        score_draw.draw_digit(f"{score}", offset_x=20, offset_y=20, digit_position_x=digit_position)
 
 
         glutSwapBuffers()
@@ -239,12 +308,12 @@ class Start_OpenGL:
         left_x1, left_y1 = -700, -900
         offset = -50
 
-        line.midpoint(left_x1 + offset, left_y1, left_x1 + 100 + offset, 900)
-        line.midpoint(-left_x1 - offset, left_y1, -left_x1 - 100 - offset, 900)
+        line.midpoint(left_x1 + offset, left_y1, left_x1 + offset, 900)
+        line.midpoint(-left_x1 - offset, left_y1, -left_x1 - offset, 900),
 
         for i in range(10):
-            line.midpoint(left_x1 + offset + i, left_y1, left_x1 + 100 + offset + i, 900)
-            line.midpoint(-left_x1 - offset - i, left_y1, -left_x1 - 100 - offset - i, 900)
+            line.midpoint(left_x1 + offset + i, left_y1, left_x1 + offset + i + i*10, 900)
+            line.midpoint(-left_x1 - offset - i, left_y1, -left_x1 - offset - i - i*10, 900)
 
     def trees(self, offset_x=0, offset_y=0):
         circle.midpoint_circle_algorithm(scale_radius + 10, -700 + offset_x, y + offset_y)
@@ -252,6 +321,9 @@ class Start_OpenGL:
         circle.midpoint_circle_algorithm(scale_radius + 10, -700 + 10 + offset_x, y + 10 + offset_y)
 
         # line.midpoint(-700, -700 + y, 680, y - 800)
+
+    def obstacle(self, obstacle_x_position, obstacle_y_position):
+        circle.midpoint_circle_algorithm(20, obstacle_x_position, obstacle_y_position)
 
 
 gl = Start_OpenGL(win_size_x=1920, win_size_y=900, pixel_size=1)
