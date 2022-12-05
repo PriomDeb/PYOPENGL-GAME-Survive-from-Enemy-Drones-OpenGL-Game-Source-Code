@@ -18,6 +18,7 @@ y = 900
 auto_key_press = Controller()
 scale_radius = 0
 SCORE = 0
+HEALTH = 50
 
 line = MidpointLine()
 circle = MidpointCircle()
@@ -70,7 +71,15 @@ OBJECT10_SPEED = 12
 
 OBSTACLE_RADIUS = 40
 
-SPEED_MULTIPLIER = 2
+SPEED_MULTIPLIER = 4
+
+JIGGLE_X = 0
+
+BULLET_X_POSITION = 900
+BULLET_POSITION_Y = PLAYER_CURRENT_Y_POSITION
+FIRE = False
+GAME_OVER = False
+
 
 
 def stars_draw(value=10):
@@ -93,6 +102,22 @@ def stars_draw(value=10):
         line_x, line_y = randint(700, 1920), randint(-900, 900)
         line1_y = randint(-900, 900)
         line.midpoint(line_x, line_y, line_x, line1_y)
+
+def fire():
+    global FIRE
+    CUBE(-800)
+
+
+def increase_radius():
+    global PLAYER_RADIUS, HEALTH, GAME_OVER
+    PLAYER_RADIUS += 4
+    HEALTH -= 1
+    if HEALTH <= 0:
+        HEALTH = 0
+        PLAYER_RADIUS = - 100
+        GAME_OVER = True
+
+
 
 
 def animate():
@@ -130,7 +155,8 @@ def animate():
         OBSTACLE_RADIUS, \
         PLAYER_CURRENT_Y_POSITION, \
         PLAYER_CURRENT_X_POSITION, \
-        SPEED_MULTIPLIER
+        SPEED_MULTIPLIER, \
+        JIGGLE_X, BULLET_POSITION_Y, FIRE, GAME_OVER
 
     red = True
     green = False
@@ -138,9 +164,18 @@ def animate():
 
     while True:
         SPEED_MULTIPLIER += 0.001
+        BULLET_POSITION_Y += 40
+        if BULLET_POSITION_Y >= 900:
+            BULLET_POSITION_Y = PLAYER_CURRENT_Y_POSITION
+            FIRE = False
+
         scale_radius += 1
         auto_key_press.press(",")
         sleep(0.1)
+
+        if GAME_OVER:
+            break
+
         y -= 20
         if y <= -900:
             y = 900
@@ -160,7 +195,11 @@ def animate():
             red = True
             green = False
             blue = True
-            colors = 0, 1, 0,
+            colors = 0, 1, 0
+
+        JIGGLE_X += 1
+        if JIGGLE_X > 20:
+            JIGGLE_X = - 20
 
         OBJECT1_CURRENT_Y_POSITION += - OBJECT1_SPEED * SPEED_MULTIPLIER
         if OBJECT1_CURRENT_Y_POSITION < - 900:
@@ -213,6 +252,7 @@ def animate():
             OBJECT10_CURRENT_X_POSITION = randint(-600, 600)
 
         glutPostRedisplay()
+
 
 def score_increment():
     global SCORE
@@ -305,9 +345,7 @@ def RESTART():
     OBJECT10_CURRENT_Y_POSITION = 900
     OBJECT10_SPEED = 12
 
-    SPEED_MULTIPLIER = 2
-
-
+    SPEED_MULTIPLIER = 4
 
 
 class Start_OpenGL:
@@ -360,6 +398,7 @@ class Start_OpenGL:
         animation_thread = Thread(target=animate)
         animation_thread.start()
 
+        global score_thread
         score_thread = Thread(target=score_increment)
         score_thread.start()
 
@@ -379,7 +418,7 @@ class Start_OpenGL:
         glutPostRedisplay()
 
     def buttons(self, key, x, y):
-        global PLAYER_CURRENT_Y_POSITION, PLAYER_CURRENT_X_POSITION, PLAYER_RADIUS
+        global PLAYER_CURRENT_Y_POSITION, PLAYER_CURRENT_X_POSITION, PLAYER_RADIUS, FIRE, BULLET_X_POSITION
         move = 50
 
         if key == b"w":
@@ -411,6 +450,11 @@ class Start_OpenGL:
         if PLAYER_CURRENT_X_POSITION > self.win_size_x:
             PLAYER_CURRENT_X_POSITION = - self.win_size_x
 
+        if key == b"f":
+            BULLET_X_POSITION = PLAYER_CURRENT_X_POSITION
+            FIRE = True
+
+
         # PLAYER_CURRENT_X_POSITION = self.player_move_x
         # PLAYER_CURRENT_Y_POSITION = self.player_move_y
 
@@ -422,34 +466,44 @@ class Start_OpenGL:
         #     RESTART(),
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT1_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT1_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 1")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT2_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT2_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 2")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT3_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT3_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 3")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT4_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT4_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 4")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 5")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT6_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT6_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 6")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT7_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT7_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 7")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT8_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT8_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 8")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT9_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT9_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 9")
-            RESTART()
+            increase_radius()
+            # RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT10_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT10_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 10")
-            RESTART(),
+            increase_radius()
+            # RESTART()
 
 
 
@@ -505,8 +559,27 @@ class Start_OpenGL:
         score_draw = Digits()
         digit_position = 900
         glColor3f(colors[0], colors[1], colors[2])
-        score_draw.draw_digit(f"{SCORE}", digit_position_x=digit_position)
-        score_draw.draw_digit(f"{SCORE}", offset_x=20, offset_y=20, digit_position_x=digit_position)
+
+        # score_draw.draw_digit(f"{SCORE}", digit_position_x=digit_position)
+
+        for i in range(10, 50, 4):
+            score_draw.draw_digit(f"{SCORE}", offset_x=i, offset_y=i, digit_position_x=digit_position)
+
+        glColor3f(colors[2], colors[1], colors[0])
+        for i in range(10, 50, 2):
+            score_draw.draw_digit(f"{HEALTH}", digit_position_x=-1920 + i, offset_x=i, offset_y=i)
+
+
+
+        if FIRE:
+            circle.filled_circle(10, BULLET_X_POSITION, BULLET_POSITION_Y)
+            fires = Thread(target=fire)
+            fires.start()
+
+        if GAME_OVER:
+            for i in range(10, 50):
+                line.midpoint(-1920 + i, 900, 1920 + i, -900)
+                line.midpoint(-1920 + i, -900 - i, 1920, 900)
 
 
         glutSwapBuffers()
@@ -534,12 +607,10 @@ class Start_OpenGL:
 
     def obstacle(self, obstacle_x_position, obstacle_y_position):
         circle.midpoint_circle_algorithm(OBSTACLE_RADIUS, obstacle_x_position, obstacle_y_position)
-        circle.filled_circle(OBSTACLE_RADIUS // 2 - 4, obstacle_x_position, obstacle_y_position - 10)
+        circle.filled_circle(OBSTACLE_RADIUS // 2 - 4, obstacle_x_position + JIGGLE_X, obstacle_y_position - 10)
 
 
 gl = Start_OpenGL(win_size_x=1920, win_size_y=900, pixel_size=1)
 
 gl.initialize()
 gl.start_main_loop()
-
-

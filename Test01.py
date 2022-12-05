@@ -86,7 +86,7 @@ def rotating():
     global rotate
     while True:
         keyboard.press("z")
-        sleep(0.01)
+        sleep(0.01)z
         rotate += 1
         glutPostRedisplay()
 
