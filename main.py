@@ -19,7 +19,7 @@ from pynput.keyboard import Key, Controller
 y = 900
 auto_key_press = Controller()
 scale_radius = 0
-score = 0
+SCORE = 0
 
 line = MidpointLine()
 circle = MidpointCircle()
@@ -27,7 +27,7 @@ colors = 0, 0, 0
 
 PLAYER_CURRENT_X_POSITION = 0
 PLAYER_CURRENT_Y_POSITION = 0
-PLAYER_RADIUS = 20
+PLAYER_RADIUS = 40
 
 OBJECT1_CURRENT_X_POSITION = randint(-600, 600)  # - 600 => 600
 OBJECT1_CURRENT_Y_POSITION = 900
@@ -48,6 +48,8 @@ OBJECT4_SPEED = 14
 OBJECT5_CURRENT_X_POSITION = randint(-600, 600)
 OBJECT5_CURRENT_Y_POSITION = 900
 OBJECT5_SPEED = 22
+
+OBSTACLE_RADIUS = 40
 
 SPEED_MULTIPLIER = 1
 
@@ -88,7 +90,8 @@ def animate():
         OBJECT5_CURRENT_X_POSITION, \
         OBJECT1_SPEED, OBJECT2_SPEED, \
         OBJECT3_SPEED, OBJECT4_SPEED, \
-        OBJECT5_SPEED, SPEED_MULTIPLIER
+        OBJECT5_SPEED, SPEED_MULTIPLIER, \
+        OBSTACLE_RADIUS, PLAYER_CURRENT_Y_POSITION, PLAYER_CURRENT_X_POSITION
 
     red = True
     green = False
@@ -118,7 +121,7 @@ def animate():
             red = True
             green = False
             blue = True
-            colors = 0, 1, 0
+            colors = 0, 1, 0,
 
         OBJECT1_CURRENT_Y_POSITION += - OBJECT1_SPEED * SPEED_MULTIPLIER
         if OBJECT1_CURRENT_Y_POSITION < - 900:
@@ -148,11 +151,12 @@ def animate():
         glutPostRedisplay()
 
 def score_increment():
-    global score
+    global SCORE
     while True:
         sleep(1)
         glutPostRedisplay()
-        score += 1
+        SCORE += 1
+
 
 def RESTART():
     global y, scale_radius, colors, \
@@ -170,11 +174,14 @@ def RESTART():
         OBJECT3_SPEED, OBJECT4_SPEED, \
         OBJECT5_SPEED, SPEED_MULTIPLIER, \
         PLAYER_CURRENT_X_POSITION, PLAYER_CURRENT_Y_POSITION, \
-        PLAYER_RADIUS
+        PLAYER_RADIUS, SCORE, OBSTACLE_RADIUS
 
     PLAYER_CURRENT_X_POSITION = 0
     PLAYER_CURRENT_Y_POSITION = 0
-    PLAYER_RADIUS = 20
+    PLAYER_RADIUS = 40
+
+    SCORE = 0
+    OBSTACLE_RADIUS = 40
 
     OBJECT1_CURRENT_X_POSITION = randint(-600, 600)  # - 600 => 600
     OBJECT1_CURRENT_Y_POSITION = 900
@@ -270,55 +277,62 @@ class Start_OpenGL:
         glutPostRedisplay()
 
     def buttons(self, key, x, y):
-        global PLAYER_CURRENT_Y_POSITION, PLAYER_CURRENT_X_POSITION
+        global PLAYER_CURRENT_Y_POSITION, PLAYER_CURRENT_X_POSITION, PLAYER_RADIUS
         move = 50
 
         if key == b"w":
-            self.player_move_y += move
-        if key == b"a" and self.player_move_x > - 600:
-            self.player_move_x -= move
+            PLAYER_CURRENT_Y_POSITION += move
+        if key == b"a" and PLAYER_CURRENT_X_POSITION > - 600:
+            PLAYER_CURRENT_X_POSITION -= move
         if key == b"s":
-            self.player_move_y -= move
-        if key == b"d" and self.player_move_x < 600:
-            self.player_move_x += move
+            PLAYER_CURRENT_Y_POSITION -= move
+        if key == b"d" and PLAYER_CURRENT_X_POSITION < 600:
+            PLAYER_CURRENT_X_POSITION += move
 
         if self.player1_radius > 0:
             if key == b"m":
-                self.player1_radius += move
+                PLAYER_RADIUS += move
             if key == b"n":
-                self.player1_radius -= move
+                PLAYER_RADIUS -= move
         else:
             self.player1_radius += 10
 
+        if PLAYER_CURRENT_Y_POSITION < - self.win_size_y:
+            PLAYER_CURRENT_Y_POSITION = self.win_size_y
 
-        if self.player_move_y < - self.win_size_y:
-            self.player_move_y = self.win_size_y
-        if self.player_move_x < - self.win_size_x:
-            self.player_move_x = self.win_size_x
-        if self.player_move_y > self.win_size_y:
-            self.player_move_y = - self.win_size_y
-        if self.player_move_x > self.win_size_x:
-            self.player_move_x = - self.win_size_x
+        if PLAYER_CURRENT_X_POSITION < - self.win_size_x:
+            PLAYER_CURRENT_X_POSITION = self.win_size_x
 
+        if PLAYER_CURRENT_Y_POSITION > self.win_size_y:
+            PLAYER_CURRENT_Y_POSITION = - self.win_size_y
 
+        if PLAYER_CURRENT_X_POSITION > self.win_size_x:
+            PLAYER_CURRENT_X_POSITION = - self.win_size_x
 
+        # PLAYER_CURRENT_X_POSITION = self.player_move_x
+        # PLAYER_CURRENT_Y_POSITION = self.player_move_y
 
-        PLAYER_CURRENT_X_POSITION = self.player_move_x
-        PLAYER_CURRENT_Y_POSITION = self.player_move_y
-
-        # print(f"Player x: {PLAYER_CURRENT_X_POSITION}, Player y: {PLAYER_CURRENT_Y_POSITION}")
+        # print(f"Player x: {PLAYER_CURRENT_X_POSITION}, Player y: {PLAYER_CURRENT_Y_POSITION} Radius: {OBSTACLE_RADIUS}"),
 
         # Collision detection
+        # if (PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT1_CURRENT_Y_POSITION + OBSTACLE_RADIUS and PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS >=OBJECT1_CURRENT_Y_POSITION - OBSTACLE_RADIUS) and ((PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS >= OBJECT1_CURRENT_X_POSITION - OBSTACLE_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT1_CURRENT_X_POSITION + OBSTACLE_RADIUS)):
+        #     print("Collision with Object 1")
+        #     RESTART(),
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT1_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT1_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 1")
+            RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT2_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT2_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 2")
+            RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT3_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT3_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 3")
+            RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT4_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT4_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 4")
+            RESTART()
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 5")
+            RESTART()
 
 
 
@@ -355,20 +369,21 @@ class Start_OpenGL:
         # Player
         glColor3f(255, 255, 100)
         # circle.filled_circle(self.player2_radius, self.player2_move_x, self.player2_move_y)
-        circle.midpoint_circle_algorithm(PLAYER_RADIUS, self.player_move_x, self.player_move_y)
+        circle.midpoint_circle_algorithm(PLAYER_RADIUS, PLAYER_CURRENT_X_POSITION, PLAYER_CURRENT_Y_POSITION)
 
         offset = 350
 
-        line.midpoint(-500 - offset, y, -200 - offset, y)  # Top
-        line.midpoint(-500 - offset, y - 100, -200 - offset, y - 100)  # Bottom
-        line.midpoint(-500 - offset, y, -500 - offset, y - 100)  # Left
-        line.midpoint(-200 - offset, y - 100, -200 - offset, y)  # Right
+        # line.midpoint(-500 - offset, y, -200 - offset, y)  # Top
+        # line.midpoint(-500 - offset, y - 100, -200 - offset, y - 100)  # Bottom
+        # line.midpoint(-500 - offset, y, -500 - offset, y - 100)  # Left
+        # line.midpoint(-200 - offset, y - 100, -200 - offset, y)  # Right
 
+        # Score
         score_draw = Digits()
         digit_position = 900
         glColor3f(colors[0], colors[1], colors[2])
-        score_draw.draw_digit(f"{score}", digit_position_x=digit_position)
-        score_draw.draw_digit(f"{score}", offset_x=20, offset_y=20, digit_position_x=digit_position)
+        score_draw.draw_digit(f"{SCORE}", digit_position_x=digit_position)
+        score_draw.draw_digit(f"{SCORE}", offset_x=20, offset_y=20, digit_position_x=digit_position)
 
 
         glutSwapBuffers()
@@ -395,7 +410,7 @@ class Start_OpenGL:
         # line.midpoint(-700, -700 + y, 680, y - 800)
 
     def obstacle(self, obstacle_x_position, obstacle_y_position):
-        circle.midpoint_circle_algorithm(20, obstacle_x_position, obstacle_y_position)
+        circle.midpoint_circle_algorithm(OBSTACLE_RADIUS, obstacle_x_position, obstacle_y_position)
 
 
 gl = Start_OpenGL(win_size_x=1920, win_size_y=900, pixel_size=1)
