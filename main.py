@@ -53,6 +53,7 @@ SPEED_MULTIPLIER = 1
 
 
 def stars_draw(value=10):
+    # Stars animation
     glBegin(GL_POINTS)
     for i in range(value):
         stars_x, stars_y = randint(-1920, -700), randint(-900, 900)
@@ -62,9 +63,15 @@ def stars_draw(value=10):
         glVertex2f(stars_x, stars_y)
     glEnd()
 
-    # for i in range(value):
-    #     stars_x, stars_y = randint(-1920, -700), randint(-900, 900)
-    #     CUBE(10, x=stars_x, y=stars_y)
+    # Air animation
+    for i in range(value - 4,):
+        line_x, line_y = randint(-1920, -700), randint(-900, 900)
+        line1_y = randint(-900, 900)
+        line.midpoint(line_x, line_y, line_x, line1_y)
+    for i in range(value - 4,):
+        line_x, line_y = randint(700, 1920), randint(-900, 900)
+        line1_y = randint(-900, 900)
+        line.midpoint(line_x, line_y, line_x, line1_y)
 
 
 def animate():
@@ -220,8 +227,8 @@ class Start_OpenGL:
         self.score = 10
 
         self.player2_radius = 20
-        self.player2_move_x = 0
-        self.player2_move_y = 0
+        self.player_move_x = 0
+        self.player_move_y = 0
 
     def set_circle_values(self, radius, center_x=0, center_y=0):
         self.__radius = radius
@@ -265,15 +272,15 @@ class Start_OpenGL:
     def buttons(self, key, x, y):
         global PLAYER_CURRENT_Y_POSITION, PLAYER_CURRENT_X_POSITION
         move = 50
+
         if key == b"w":
-            self.score += 1
-            self.player1_move_y += move
+            self.player_move_y += move
+        if key == b"a" and self.player_move_x > - 600:
+            self.player_move_x -= move
         if key == b"s":
-            self.player1_move_y -= move
-        if key == b"a":
-            self.player1_move_x -= move
-        if key == b"d":
-            self.player1_move_x += move
+            self.player_move_y -= move
+        if key == b"d" and self.player_move_x < 600:
+            self.player_move_x += move
 
         if self.player1_radius > 0:
             if key == b"m":
@@ -283,35 +290,21 @@ class Start_OpenGL:
         else:
             self.player1_radius += 10
 
-        if self.player1_move_y < - self.win_size_y:
-            self.player1_move_y = self.win_size_y
-        if self.player1_move_x < - self.win_size_x:
-            self.player1_move_x = self.win_size_x
-        if self.player1_move_y > self.win_size_y:
-            self.player1_move_y = - self.win_size_y
-        if self.player1_move_x > self.win_size_x:
-            self.player1_move_x = - self.win_size_x
 
-        if self.player2_move_y < - self.win_size_y:
-            self.player2_move_y = self.win_size_y
-        if self.player2_move_x < - self.win_size_x:
-            self.player2_move_x = self.win_size_x
-        if self.player2_move_y > self.win_size_y:
-            self.player2_move_y = - self.win_size_y
-        if self.player2_move_x > self.win_size_x:
-            self.player2_move_x = - self.win_size_x
+        if self.player_move_y < - self.win_size_y:
+            self.player_move_y = self.win_size_y
+        if self.player_move_x < - self.win_size_x:
+            self.player_move_x = self.win_size_x
+        if self.player_move_y > self.win_size_y:
+            self.player_move_y = - self.win_size_y
+        if self.player_move_x > self.win_size_x:
+            self.player_move_x = - self.win_size_x
 
-        if key == b"6" and self.player2_move_x < 600:
-            self.player2_move_x += move
-        if key == b"8":
-            self.player2_move_y += move
-        if key == b"4" and self.player2_move_x > - 600:
-            self.player2_move_x -= move
-        if key == b"2":
-            self.player2_move_y -= move
 
-        PLAYER_CURRENT_X_POSITION = self.player2_move_x
-        PLAYER_CURRENT_Y_POSITION = self.player2_move_y
+
+
+        PLAYER_CURRENT_X_POSITION = self.player_move_x
+        PLAYER_CURRENT_Y_POSITION = self.player_move_y
 
         # print(f"Player x: {PLAYER_CURRENT_X_POSITION}, Player y: {PLAYER_CURRENT_Y_POSITION}")
 
@@ -327,7 +320,7 @@ class Start_OpenGL:
         if PLAYER_CURRENT_Y_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_Y_POSITION <= PLAYER_CURRENT_Y_POSITION + PLAYER_RADIUS and PLAYER_CURRENT_X_POSITION - PLAYER_RADIUS <= OBJECT5_CURRENT_X_POSITION <= PLAYER_CURRENT_X_POSITION + PLAYER_RADIUS:
             print("Collision with Object 5")
 
-        
+
 
         glutPostRedisplay()
 
@@ -347,8 +340,9 @@ class Start_OpenGL:
         self.trees(1350, 0)
         CUBE(y=OBJECT1_CURRENT_Y_POSITION)
 
+        # Stars
         glColor3f(1, 1, 1)
-        stars_draw(value=100)
+        stars_draw(value=10)
 
         # Obstacles
         glColor3f(1, 0, 0)
@@ -361,7 +355,7 @@ class Start_OpenGL:
         # Player
         glColor3f(255, 255, 100)
         # circle.filled_circle(self.player2_radius, self.player2_move_x, self.player2_move_y)
-        circle.midpoint_circle_algorithm(PLAYER_RADIUS, self.player2_move_x, self.player2_move_y)
+        circle.midpoint_circle_algorithm(PLAYER_RADIUS, self.player_move_x, self.player_move_y)
 
         offset = 350
 
