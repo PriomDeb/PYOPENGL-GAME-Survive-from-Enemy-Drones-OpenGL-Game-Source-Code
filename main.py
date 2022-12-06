@@ -567,6 +567,7 @@ class Start_OpenGL:
         self.road_decorators(-10)
         self.road_decorators(1400, 0)
         CUBE(y=OBJECT1_CURRENT_Y_POSITION)
+        ui_text.health_text(-1900, 200)
 
         # Stars
         glColor3f(1, 1, 1)

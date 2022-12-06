@@ -70,6 +70,15 @@ class UI_Text:
             self.e(adjust=1050, x=i + x, y=i + y)
             self.r(adjust=1200, x=i + x, y=i + y)
 
+    def health_text(self, x=0, y=0):
+        for i in range(10, 40, 4):
+            self.h(adjust=0, x=i + x, y=i + y)
+            self.e(adjust=150, x=i + x, y=i + y)
+            self.a(adjust=300, x=i + x, y=i + y)
+            self.l(adjust=450, x=i + x, y=i + y)
+            self.t(adjust=600, x=i + x, y=i + y)
+            self.h(adjust=750, x=i + x, y=i + y)
+
     def text(self, adjust=0, x=0, y=0):
         for i in range(0, 10, 2):
             circle.midpoint_circle_algorithm(700 - i, 0, 0)
@@ -86,6 +95,17 @@ class UI_Text:
         for i in range(10):
             line.midpoint(left_x1 + offset + i, left_y1, left_x1 + offset + i + i * 10, 900)
             line.midpoint(-left_x1 - offset - i, left_y1, -left_x1 - offset - i - i * 10, 900)
+
+        score_and_health_text = Digits()
+        digit_position = 900
+        SCORE = 10
+        HEALTH = 50
+
+        for i in range(10, 50, 4):
+            score_and_health_text.draw_digit(f"{SCORE}", offset_x=i, offset_y=i, digit_position_x=digit_position)
+
+        for i in range(10, 50, 2):
+            score_and_health_text.draw_digit(f"{HEALTH}", digit_position_x=-1920 + i, offset_x=i, offset_y=i)
 
         # line.midpoint(x + 0 + adjust, y + 0, x + 0 + adjust, y + 70)  # Left Bottom
         # line.midpoint(x + 0 + adjust, y + 80, x + 0 + adjust, y + 150)  # Left Top
@@ -156,8 +176,25 @@ class UI_Text:
 
         line.midpoint(x + 80 + adjust, y + 0, x + 10 + adjust, y + 60)  # Bottom Left Corner
 
+    def h(self, x=0, y=0, adjust=0):
+        line.midpoint(x + 0 + adjust, y + 0, x + 0 + adjust, y + 70)  # Left Bottom
+        line.midpoint(x + 0 + adjust, y + 80, x + 0 + adjust, y + 150)  # Left Top
+        line.midpoint(x + 80 + adjust, y + 80, x + 80 + adjust, y + 150)  # Right Top
+        line.midpoint(x + 80 + adjust, y + 0, x + 80 + adjust, y + 70)  # Right Bottom
+        line.midpoint(x + 10 + adjust, y + 70, x + 70 + adjust, y + 70)  # Middle
 
-# gl = Start_OpenGL(win_size_x=1920, win_size_y=900, pixel_size=1)
+    def l(self, x=0, y=0, adjust=0):
+        line.midpoint(x + 0 + adjust, y + 0, x + 0 + adjust, y + 70)  # Left Bottom
+        line.midpoint(x + 0 + adjust, y + 80, x + 0 + adjust, y + 150)  # Left Top
+        line.midpoint(x + 10 + adjust, y + 0, x + 70 + adjust, y + 0)  # Bottom
+
+    def t(self, x=0, y=0, adjust=0):
+        line.midpoint(x + 0 + adjust, y + 150, x + 80 + adjust, y + 150)  # Top
+        line.midpoint(x + 35 + adjust, y + 0, x + 35 + adjust, y + 70)  # Left Bottom
+        line.midpoint(x + 35 + adjust, y + 80, x + 35 + adjust, y + 150)  # Left Top
+
+
+# gl = UI_Text(win_size_x=1920, win_size_y=900, pixel_size=1)
 #
 # gl.initialize()
 # gl.start_main_loop()
