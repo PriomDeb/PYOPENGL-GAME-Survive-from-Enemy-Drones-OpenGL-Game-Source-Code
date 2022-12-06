@@ -79,6 +79,14 @@ class UI_Text:
             self.t(adjust=600, x=i + x, y=i + y)
             self.h(adjust=750, x=i + x, y=i + y)
 
+    def score_text(self, x=0, y=0):
+        for i in range(10, 40, 4):
+            self.s(adjust=0, x=i + x, y=i + y)
+            self.c(adjust=150, x=i + x, y=i + y)
+            self.o(adjust=300, x=i + x, y=i + y)
+            self.r(adjust=450, x=i + x, y=i + y)
+            self.e(adjust=600, x=i + x, y=i + y)
+
     def text(self, adjust=0, x=0, y=0):
         for i in range(0, 10, 2):
             circle.midpoint_circle_algorithm(700 - i, 0, 0)
@@ -192,6 +200,19 @@ class UI_Text:
         line.midpoint(x + 0 + adjust, y + 150, x + 80 + adjust, y + 150)  # Top
         line.midpoint(x + 35 + adjust, y + 0, x + 35 + adjust, y + 70)  # Left Bottom
         line.midpoint(x + 35 + adjust, y + 80, x + 35 + adjust, y + 150)  # Left Top
+
+    def s(self, x=0, y=0, adjust=0):
+        line.midpoint(x + 0 + adjust, y + 80, x + 0 + adjust, y + 150)  # Left Top
+        line.midpoint(x + 10 + adjust, y + 150, x + 70 + adjust, y + 150)  # Top
+        line.midpoint(x + 80 + adjust, y + 0, x + 80 + adjust, y + 70)  # Right Bottom
+        line.midpoint(x + 10 + adjust, y + 0, x + 70 + adjust, y + 0)  # Bottom
+        line.midpoint(x + 10 + adjust, y + 70, x + 70 + adjust, y + 70)  # Middle
+
+    def c(self, x=0, y=0, adjust=0):
+        line.midpoint(x + 0 + adjust, y + 0, x + 0 + adjust, y + 70)  # Left Bottom
+        line.midpoint(x + 0 + adjust, y + 80, x + 0 + adjust, y + 150)  # Left Top
+        line.midpoint(x + 10 + adjust, y + 150, x + 70 + adjust, y + 150)  # Top
+        line.midpoint(x + 10 + adjust, y + 0, x + 70 + adjust, y + 0)  # Bottom
 
 
 # gl = UI_Text(win_size_x=1920, win_size_y=900, pixel_size=1)
