@@ -648,7 +648,7 @@ class Start_OpenGL:
         circle.filled_circle(OBSTACLE_RADIUS // 2 - 4, obstacle_x_position + JIGGLE_X, obstacle_y_position - 10)
 
 
-gl = Start_OpenGL(win_size_x=1920, win_size_y=900, pixel_size=1)
+gl = Start_OpenGL(win_size_x=1920, win_size_y=900, pixel_size=1, title="Survive from Enemy Drones in Space")
 
 gl.initialize()
 gl.start_main_loop()
