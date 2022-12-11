@@ -2,7 +2,7 @@ from circle import MidpointCircle
 from line import MidpointLine
 from digits import Digits
 from cube import CUBE
-from gameOverText import UI_Text
+from uiTexts import UI_Text
 
 
 from OpenGL.GL import *
@@ -566,7 +566,7 @@ class Start_OpenGL:
         self.road()
         self.road_decorators(-10)
         self.road_decorators(1400, 0)
-        CUBE(y=OBJECT1_CURRENT_Y_POSITION)
+        # CUBE(y=OBJECT1_CURRENT_Y_POSITION)
         ui_text.health_text(-1900, 200)
         ui_text.score_text(950, 200)
 

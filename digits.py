@@ -211,35 +211,3 @@ class Digits:
     def m(self, adjust=0, x=0, y=0):
         # Middle
         self.midpoint(200 + adjust + x, 400 + y, 400 + adjust + x, 400 + y)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
