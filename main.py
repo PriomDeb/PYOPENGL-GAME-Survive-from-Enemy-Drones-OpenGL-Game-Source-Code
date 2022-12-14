@@ -19,7 +19,7 @@ y = 900
 auto_key_press = Controller()
 scale_radius = 0
 SCORE = 0
-HEALTH = 4
+HEALTH = 50
 
 line = MidpointLine()
 circle = MidpointCircle()
@@ -380,10 +380,13 @@ def RESTART():
     SPEED_MULTIPLIER = 4
 
 
-class Start_OpenGL:
+class Survive_In_Space:
     """
-    This class is designed to a circle using midpoint circle algorithm with 8-way symmetry
-    Author- Priom Deb
+    The whole game is developed using only OpenGL (PyOpenGL).
+    No built in line drawing or circle drawing method is used.
+    The every pixel of this game is drawn using computer graphics algorithms.
+    Midpoint Line Drawing and Midpoint Circle Drawing algorithm is used to draw the graphics of this game.
+    No built in transformation method is used. Every transformation is done manually.
     http://priomdeb.com, priom@priomdeb.com
     """
     def __init__(self, win_size_x=500, win_size_y=500, win_pos_x=0, win_pos_y=0, title="Priom OpenGL Class",
@@ -551,7 +554,6 @@ class Start_OpenGL:
 
         glutPostRedisplay()
 
-
     def another_circle(self, radius):
         circle1 = MidpointCircle()
         circle1.midpoint_circle_algorithm(500)
@@ -576,6 +578,7 @@ class Start_OpenGL:
 
         # Obstacles
         glColor3f(1, 0, 0)
+        glPointSize(1)
         self.obstacle(OBJECT1_CURRENT_X_POSITION, OBJECT1_CURRENT_Y_POSITION)
         self.obstacle(OBJECT2_CURRENT_X_POSITION, OBJECT2_CURRENT_Y_POSITION)
         self.obstacle(OBJECT3_CURRENT_X_POSITION, OBJECT3_CURRENT_Y_POSITION)
@@ -592,6 +595,8 @@ class Start_OpenGL:
         # circle.filled_circle(self.player2_radius, self.player2_move_x, self.player2_move_y)
         circle.midpoint_circle_algorithm(PLAYER_RADIUS, PLAYER_CURRENT_X_POSITION, PLAYER_CURRENT_Y_POSITION)
         circle.filled_circle(PLAYER_RADIUS // 2 - 4, PLAYER_CURRENT_X_POSITION, PLAYER_CURRENT_Y_POSITION + 10)
+
+        glPointSize(1)
 
         # Score
         score_and_health_text = Digits()
@@ -650,7 +655,10 @@ class Start_OpenGL:
         circle.filled_circle(OBSTACLE_RADIUS // 2 - 4, obstacle_x_position + JIGGLE_X, obstacle_y_position - 10)
 
 
-gl = Start_OpenGL(win_size_x=1920, win_size_y=900, pixel_size=1, title="Survive from Enemy Drones in Space")
+survive_in_space = Survive_In_Space(win_size_x=1920,
+                                    win_size_y=900,
+                                    pixel_size=1,
+                                    title="Survive from Enemy Drones in Space")
 
-gl.initialize()
-gl.start_main_loop()
+survive_in_space.initialize()
+survive_in_space.start_main_loop()
