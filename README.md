@@ -29,6 +29,14 @@ The whole game is developed using only OpenGL (PyOpenGL). No built in line drawi
 |Move         | W, A, S, D  |
 |Restart      |     R       |
 
+## Clone this project
+```bash
+git clone https://github.com/PriomDeb/PYOPENGL-GAME-Survive-from-Enemy-Drones-OpenGL-Game-Source-Code
+```
+
+## Install dependencies
+- PyOpenGL
+- PyOpenGL_Accelerate
 
 
 ## Priom-Deb-Py-Open-GL-Game-Py-Open-GL-Project-Open-GL-Game-Open-GL-Project
