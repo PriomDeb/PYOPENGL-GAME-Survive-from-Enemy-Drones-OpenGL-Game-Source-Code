@@ -46,6 +46,11 @@ git clone https://github.com/PriomDeb/PYOPENGL-GAME-Survive-from-Enemy-Drones-Op
 - PyOpenGL
 - PyOpenGL_Accelerate
 
+## Run
+```bash
+python run.py
+```
+
 <br/>
 
 # Languages and Tools
