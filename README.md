@@ -23,12 +23,11 @@ Features
 
 6. UI Texts for Score, Health and Game Over
 
-|-------------|
-|Game Controls|
-|-------------|
-|Move: W, A, S, D|
-|----------------|
-|Restart: R|
+
+|Game Controls||Keys|
+|-------------||-------------|
+|Move| |W, A, S, D|
+|Restart| |R|
 
 
 
