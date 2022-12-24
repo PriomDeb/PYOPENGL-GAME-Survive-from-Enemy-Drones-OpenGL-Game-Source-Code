@@ -48,7 +48,7 @@ git clone https://github.com/PriomDeb/PYOPENGL-GAME-Survive-from-Enemy-Drones-Op
 
 ## Run
 ```bash
-python run.py
+python main.py
 ```
 
 <br/>
