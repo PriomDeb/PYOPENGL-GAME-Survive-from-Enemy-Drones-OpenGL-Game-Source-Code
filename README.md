@@ -23,13 +23,13 @@ Features
 
 6. UI Texts for Score, Health and Game Over
 
+|-------------|
+|Game Controls|
+|-------------|
+|Move: W, A, S, D|
+|----------------|
+|Restart: R|
 
-Game Controls
-
-Move: W, A, S, D
-
-Restart: R
 
 
-
-#Priom-Deb-Py-Open-GL-Game-Py-Open-GL-Project-Open-GL-Game-Open-GL-Project
+## Priom-Deb-Py-Open-GL-Game-Py-Open-GL-Project-Open-GL-Game-Open-GL-Project
